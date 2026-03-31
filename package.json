@@ -1,0 +1,23 @@
+{
+  "name": "proyectofinalcapel",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass --watch scss/styles.scss css/styles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agus1622/ProyectoFinalCapel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agus1622/ProyectoFinalCapel/issues"
+  },
+  "homepage": "https://github.com/agus1622/ProyectoFinalCapel#readme",
+  "description": "",
+  "dependencies": {
+    "sass": "^1.98.0"
+  }
+}

@@ -1,0 +1,34 @@
+[
+    {
+        "usuario": "Agus1622",
+        "nombre": "Agustina",
+        "apellido": "Capel",
+        "numeroCuenta": "654-008777/1",
+        "saldoArs": 150000,
+        "saldoDol": 3000
+    },
+    {
+        "usuario": "JuanBlas",
+        "nombre": "Juan",
+        "apellido": "Blas",
+        "numeroCuenta": "654-008473/9",
+        "saldoArs": 80000,
+        "saldoDol": 200
+    },
+    {
+        "usuario": "MiltonTop",
+        "nombre": "Milton",
+        "apellido": "Salazar",
+        "numeroCuenta": "654-007654/4",
+        "saldoArs": 230000,
+        "saldoDol": 1050
+    },
+    {
+        "usuario": "JavierG",
+        "nombre": "Javier",
+        "apellido": "García",
+        "numeroCuenta": "654-009876/2",
+        "saldoArs": 2300000,
+        "saldoDol": 30000
+    }
+]

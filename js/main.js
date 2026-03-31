@@ -33,8 +33,11 @@ function cargarDesdeStorage() {
     if (data && data.length > 0) {
         usuarios = data.map(u => Object.assign(new Usuario(), u));
     } else {
-        // Crear usuario inicial si no hay uno
-        usuarios = [new Usuario("Javier", 5513, 1500000, 2300)];
+        usuarios = [
+            new Usuario("Agus1622", 4264, 150000, 3000),
+            new Usuario("JuanBlas", 1234, 80000, 200),
+            new Usuario("JavierG", 5513, 2300000, 3000)
+        ];
         guardarEnStorage();
     }
 }
@@ -48,7 +51,7 @@ const btnLogin = document.getElementById("btnLogin");
 const inputPin = document.getElementById("inputPin");
 const mensajeLogin = document.getElementById("mensajeLogin");
 
-const appSection = document.getElementById("app-section");
+const appSection = document.getElementById("appSection");
 const loginSection = document.getElementById("login-section");
 
 const nombreUsuarioSpan = document.getElementById("nombreUsuario");
@@ -79,74 +82,108 @@ btnLogin.addEventListener("click", () => {
 
         nombreUsuarioSpan.textContent = usuarioActual.nombre;
         mensajeLogin.textContent = "";
+
+        mostrarCuenta(usuarioActual.nombre);
+
     } else {
         mensajeLogin.textContent = "Usuario o PIN incorrecto";
     }
-});
 
-/*  Botones  */
+    /*  Botones  */
 
-document.getElementById("btnSaldoArs").addEventListener("click", () => {
-    resultadoDiv.textContent = "Saldo en pesos: $" + usuarioActual.saldoArs;
+    document.getElementById("btnSaldoArs").addEventListener("click", () => {
+        resultadoDiv.textContent = "Saldo en pesos: $" + usuarioActual.saldoArs;
 
-    usuarioActual.movimientos.push({
-        tipo: "Consulta saldo en pesos",
-        fecha: new Date().toLocaleString()
+        usuarioActual.movimientos.push({
+            tipo: "Consulta saldo en pesos",
+            fecha: new Date().toLocaleString()
+        });
+
+        guardarEnStorage();
     });
 
-    guardarEnStorage();
-});
+    document.getElementById("btnSaldoDol").addEventListener("click", () => {
+        resultadoDiv.textContent = "Saldo en dólares: u$s" + usuarioActual.saldoDol;
 
-document.getElementById("btnSaldoDol").addEventListener("click", () => {
-    resultadoDiv.textContent = "Saldo en dólares: u$s" + usuarioActual.saldoDol;
+        usuarioActual.movimientos.push({
+            tipo: "Consulta saldo en dólares",
+            fecha: new Date().toLocaleString()
+        });
 
-    usuarioActual.movimientos.push({
-        tipo: "Consulta saldo en dólares",
-        fecha: new Date().toLocaleString()
+        guardarEnStorage();
     });
 
-    guardarEnStorage();
-});
+    const inputDeposito = document.getElementById("inputDeposito");
 
-const inputDeposito = document.getElementById("inputDeposito");
+    document.getElementById("btnDeposito").addEventListener("click", () => {
 
-document.getElementById("btnDeposito").addEventListener("click", () => {
+        const monto = parseFloat(inputDeposito.value);
 
-    const monto = parseFloat(inputDeposito.value);
-
-    if (isNaN(monto) || monto <= 0) {
-        resultadoDiv.textContent = "Ingresá un monto válido";
-        return;
-    }
-
-    if (monto > usuarioActual.saldoArs * 10) {
-        resultadoDiv.textContent = "Supera límite de depósito";
-        return;
-    }
-
-    usuarioActual.depositar(monto);
-    guardarEnStorage();
-
-    resultadoDiv.textContent = "Depósito de $" + monto + " realizado con éxito";
-
-    inputDeposito.value = "";
-});
-
-
-document.getElementById("btnMovimientos").addEventListener("click", () => {
-    listaMovimientos.innerHTML = "";
-    usuarioActual.movimientos.forEach((movimiento) => {
-        const li = document.createElement("li");
-
-        if (movimiento.tipo === "Depósito") {
-            li.textContent = `${movimiento.tipo} de $${movimiento.monto} - ${movimiento.fecha}`;
-        } else {
-            li.textContent = `${movimiento.tipo} - ${movimiento.fecha}`;
+        if (isNaN(monto) || monto <= 0) {
+            resultadoDiv.textContent = "Ingresá un monto válido";
+            return;
         }
 
-        listaMovimientos.appendChild(li);
+        if (monto > usuarioActual.saldoArs * 10) {
+            resultadoDiv.textContent = "Supera límite de depósito";
+            return;
+        }
+
+        usuarioActual.depositar(monto);
+        guardarEnStorage();
+
+        mostrarCuenta(usuarioActual.nombre);
+
+        resultadoDiv.textContent = "Depósito de $" + monto + " realizado con éxito";
+
+        inputDeposito.value = "";
     });
+
+
+    document.getElementById("btnMovimientos").addEventListener("click", () => {
+        listaMovimientos.innerHTML = "";
+        usuarioActual.movimientos.forEach((movimiento) => {
+            const li = document.createElement("li");
+
+            if (movimiento.tipo === "Depósito") {
+                li.textContent = `${movimiento.tipo} de $${movimiento.monto} - ${movimiento.fecha}`;
+            } else {
+                li.textContent = `${movimiento.tipo} - ${movimiento.fecha}`;
+            }
+
+            listaMovimientos.appendChild(li);
+        });
+    });
+
+    function mostrarCuenta(nombreUsuario) {
+        fetch("cuentas.json")
+            .then(response => response.json())
+            .then(cuentas => {
+
+                const contenedor = document.getElementById("info");
+                contenedor.innerHTML = "";
+
+                const cuenta = cuentas.find(
+                    c => c.usuario.toUpperCase() === nombreUsuario.toUpperCase()
+                );
+
+                if (cuenta) {
+
+                    if (usuarioActual.saldoArs === undefined) {
+                        usuarioActual.saldoArs = cuenta.saldoArs;
+                        usuarioActual.saldoDol = cuenta.saldoDol;
+                    }
+
+                    usuarioActual.numeroCuenta = cuenta.numeroCuenta;
+
+                    contenedor.innerHTML = `
+                        <p>N° Cuenta: ${cuenta.numeroCuenta}</p>
+                        <p>Saldo ARS: $${usuarioActual.saldoArs.toLocaleString()}</p>
+                        <p>Saldo USD: U$D ${usuarioActual.saldoDol}</p>
+        `;
+                } else {
+                    contenedor.innerHTML = "<p>No se encontró la cuenta</p>";
+                }
+            });
+    }
 });
-
-
-/* No es magia negra, es solo programación */
