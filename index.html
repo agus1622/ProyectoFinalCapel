@@ -10,36 +10,37 @@
 </head>
 
 <body>
+    <header class="header">
+        <h1>FINCAP</h1>
+        <button id="btnLogout" class="logout-btn hidden">Cerrar sesión</button>
+    </header>
+    <main>
+        <section id="login-section">
+            <h2>Iniciar Sesión</h2>
 
-    <h1>[FINCAP]</h1>
+            <input type="text" id="inputUsuario" placeholder="Usuario">
+            <input type="password" id="inputPin" placeholder="PIN">
+            <button id="btnLogin">Ingresar</button>
 
+            <p id="mensajeLogin"></p>
+        </section>
 
-    <section id="login-section">
-        <h2>Iniciar Sesión</h2>
+        <section id="appSection" class="hidden">
+            <h2>Bienvenido/a <span id="nombreUsuario"></span></h2>
+            <button id="btnSaldoArs">Consultar saldo en pesos</button>
+            <button id="btnSaldoDol">Consultar saldo en dólares</button>
+            <button id="btnMovimientos">Ver movimientos</button>
+            <button id="btnDeposito">Depositar pesos</button>
+            <input type="number" id="inputDeposito" placeholder="Ingresar monto">
 
-        <input type="text" id="inputUsuario" placeholder="Usuario">
-        <input type="password" id="inputPin" placeholder="PIN">
-        <button id="btnLogin">Ingresar</button>
+            <div id="resultado"></div>
+            <ul id="listaMovimientos"></ul>
 
-        <p id="mensajeLogin"></p>
-    </section>
-
-    <section id="appSection" class="hidden">
-        <h2>Bienvenido/a <span id="nombreUsuario"></span></h2>
-
-        <button id="btnSaldoArs">Consultar saldo en pesos</button>
-        <button id="btnSaldoDol">Consultar saldo en dólares</button>
-        <button id="btnMovimientos">Ver movimientos</button>
-        <button id="btnDeposito">Depositar pesos</button>
-        <input type="number" id="inputDeposito" placeholder="Ingresar monto">
-
-        <div id="resultado"></div>
-        <ul id="listaMovimientos"></ul>
-
-        <h2>Cuentas</h2>
-        <div id="info"></div>
-    </section>
-    <script src="js/main.js"></script>
+            <h2>Cuentas</h2>
+            <div id="info"></div>
+        </section>
+        <script src="js/main.js"></script>
+    </main>
 </body>
 
 </html>

@@ -85,11 +85,26 @@ btnLogin.addEventListener("click", () => {
 
         mostrarCuenta(usuarioActual.nombre);
 
+        document.getElementById("btnLogout").classList.remove("hidden");
+
     } else {
         mensajeLogin.textContent = "Usuario o PIN incorrecto";
     }
 
     /*  Botones  */
+    document.getElementById("btnLogout").addEventListener("click", () => {
+
+        usuarioActual = null;
+
+        appSection.classList.add("hidden");
+        loginSection.classList.remove("hidden");
+
+        resultadoDiv.textContent = "";
+        listaMovimientos.innerHTML = "";
+
+        document.getElementById("btnLogout").classList.add("hidden");
+    });
+
 
     document.getElementById("btnSaldoArs").addEventListener("click", () => {
         resultadoDiv.textContent = "Saldo en pesos: $" + usuarioActual.saldoArs;
