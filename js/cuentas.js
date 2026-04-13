@@ -23,9 +23,9 @@ function mostrarCuenta(nombreUsuario) {
                 contenedor.innerHTML = `
                     <p>N° Cuenta: ${usuarioActual.numeroCuenta}</p>
                     <p>Saldo ARS: $${usuarioActual.saldoArs.toLocaleString()}</p>
-                    <p>Saldo USD: U$D ${usuarioActual.saldoDol}</p>
+                    <p>Saldo USD: U$D ${usuarioActual.saldoDol.toFixed(2)}</p>
                 `;
-                
+
             } else {
                 contenedor.innerHTML = "<p>No se encontró la cuenta</p>";
             }

@@ -34,18 +34,27 @@
             <div id="info" class="tarjeta"></div>
 
             <div class="acciones">
-                <button id="btnSaldoArs">Consultar saldo en pesos</button>
-                <button id="btnSaldoDol">Consultar saldo en dólares</button>
-                <button id="btnMovimientos">Ver movimientos</button>
-                <input type="number" id="inputPlazoFijo" placeholder="Monto a invertir">
+
+                <button id="btnTransferir">Transferir dinero</button>
+                <input type="text" id="inputDestino" placeholder="Usuario destino">
+                <input type="number" id="inputTransferencia" placeholder="Monto a transferir">
+                
+                <button id="btnComprarDol">Comprar dólares</button>
+                <input type="number" id="inputCompraDol" placeholder="Monto en pesos">
+                <p id="cotizacionDol">Cotización USD: $1410</p>
+
                 <button id="btnPlazoFijo">Constituir plazo fijo a 30 días</button>
+                <input type="number" id="inputPlazoFijo" placeholder="Monto a invertir">
+
+                <button id="btnMovimientos">Ver movimientos</button>
+                
             </div>
 
             <div id="resultado"></div>
             <ul id="listaMovimientos"></ul>
 
         </section>
-        
+
         <script src="js/cuentas.js"></script>
         <script src="js/main.js"></script>
     </main>

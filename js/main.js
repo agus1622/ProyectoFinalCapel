@@ -10,6 +10,7 @@ function Usuario(nombre, pin, saldoArs, saldoDol) {
 
 let usuarios = [];
 let usuarioActual = null;
+const COTIZACION_DOLAR = 1410;
 
 
 /*  Storage  */
@@ -110,30 +111,113 @@ btnLogout.addEventListener("click", () => {
 
 /*  Botones  */
 
-document.getElementById("btnSaldoArs").addEventListener("click", () => {
+document.getElementById("btnTransferir").addEventListener("click", () => {
     if (!usuarioActual) return;
 
-    resultadoDiv.textContent = `Saldo en pesos: $${usuarioActual.saldoArs.toLocaleString()}`;
+    const destinoNombre = document.getElementById("inputDestino").value.trim().toUpperCase();
+    const monto = parseFloat(document.getElementById("inputTransferencia").value);
+
+    if (destinoNombre === "") {
+        resultadoDiv.textContent = "Ingresá un usuario destino";
+        return;
+    }
+
+    const destino = usuarios.find(u => u.nombre.toUpperCase() === destinoNombre);
+
+    if (!destino) {
+        resultadoDiv.textContent = "El usuario no existe";
+        return;
+    }
+
+    if (destino === usuarioActual) {
+        resultadoDiv.textContent = "No podés transferirte a vos mismo";
+        return;
+    }
+
+    if (isNaN(monto) || monto <= 0) {
+        resultadoDiv.textContent = "Monto inválido";
+        return;
+    }
+
+    if (monto > usuarioActual.saldoArs) {
+        Swal.fire({
+            icon: "error",
+            title: "Saldo insuficiente",
+            text: "No tenés fondos disponibles"
+        });
+        return;
+    }
+
+    usuarioActual.saldoArs -= monto;
+    destino.saldoArs += monto;
 
     usuarioActual.movimientos.push({
-        tipo: "Consulta saldo en pesos",
+        tipo: `Transferencia enviada a ${destino.nombre} por $${monto}`,
+        fecha: new Date().toLocaleString()
+    });
+
+    destino.movimientos.push({
+        tipo: `Transferencia recibida de ${usuarioActual.nombre} por $${monto}`,
         fecha: new Date().toLocaleString()
     });
 
     guardarEnStorage();
+    mostrarCuenta(usuarioActual.nombre);
+
+    Swal.fire({
+        icon: "success",
+        title: "Transferencia exitosa",
+        text: `Enviaste $${monto} a ${destino.nombre}`
+    });
+
+    document.getElementById("inputDestino").value = "";
+    document.getElementById("inputTransferencia").value = "";
 });
 
-document.getElementById("btnSaldoDol").addEventListener("click", () => {
+
+document.getElementById("btnComprarDol").addEventListener("click", () => {
     if (!usuarioActual) return;
 
-    resultadoDiv.textContent = `Saldo en dólares: U$D ${usuarioActual.saldoDol}`;
+    const monto = parseFloat(document.getElementById("inputCompraDol").value);
+
+    if (isNaN(monto) || monto <= 0) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ingresá un monto válido"
+        });
+        return;
+    }
+
+    if (monto > usuarioActual.saldoArs) {
+        Swal.fire({
+            icon: "error",
+            title: "Saldo insuficiente",
+            text: "No tenés fondos disponibles"
+        });
+        return;
+    }
+
+    const dolares = monto / COTIZACION_DOLAR;
+
+    usuarioActual.saldoArs -= monto;
+    usuarioActual.saldoDol += dolares;
 
     usuarioActual.movimientos.push({
-        tipo: "Consulta saldo en dólares",
+        tipo: `Compra de USD por $${monto.toLocaleString("es-AR")}`,
         fecha: new Date().toLocaleString()
     });
 
     guardarEnStorage();
+    mostrarCuenta(usuarioActual.nombre);
+
+    Swal.fire({
+        icon: "success",
+        title: "Compra realizada",
+        text: `Compraste U$D ${dolares.toFixed(2)}`
+    });
+
+    document.getElementById("inputCompraDol").value = "";
 });
 
 document.getElementById("btnPlazoFijo").addEventListener("click", () => {
@@ -142,12 +226,20 @@ document.getElementById("btnPlazoFijo").addEventListener("click", () => {
     const monto = parseFloat(inputPlazoFijo.value);
 
     if (isNaN(monto) || monto <= 0) {
-        resultadoDiv.textContent = "Ingresá un monto válido";
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ingresá un monto válido"
+        });
         return;
     }
 
     if (monto > usuarioActual.saldoArs) {
-        resultadoDiv.textContent = "Saldo insuficiente";
+        Swal.fire({
+            icon: "error",
+            title: "Saldo insuficiente",
+            text: "No tenés fondos disponibles"
+        });
         return;
     }
 
@@ -164,8 +256,15 @@ document.getElementById("btnPlazoFijo").addEventListener("click", () => {
     guardarEnStorage();
     mostrarCuenta(usuarioActual.nombre);
 
-    resultadoDiv.textContent =
-        `Invertiste $${monto}. Ganancia: $${interes.toFixed(2)}. Total: $${total.toFixed(2)}`;
+    Swal.fire({
+        icon: "success",
+        title: "Plazo fijo constituido",
+        html: `
+        Invertiste $${monto}<br>
+        Ganancia: $${interes.toFixed(2)}<br>
+        Total a acreditar: $${total.toFixed(2)}
+    `
+    });
 
     inputPlazoFijo.value = "";
 });
@@ -181,3 +280,5 @@ document.getElementById("btnMovimientos").addEventListener("click", () => {
         listaMovimientos.appendChild(li);
     });
 });
+
+
