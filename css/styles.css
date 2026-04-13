@@ -32,9 +32,29 @@ header {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-#appSection h2 {
+#appSection h2, #appSection h3 {
     margin-bottom: 20px;
     color: #1e2a38;
+}
+
+.tarjeta {
+    background: linear-gradient(135deg, #1e2a38, #2d6cdf);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.tarjeta p {
+    margin: 5px 0;
+}
+
+.acciones {
+    margin-top: 10px;
+}
+
+.acciones button {
+    margin-top: 10px;
 }
 
 button {
@@ -47,7 +67,7 @@ button {
     color: white;
     font-size: 14px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 button:hover {
@@ -91,12 +111,5 @@ input {
     margin-bottom: 5px;
 }
 
-#info {
-    background: #eaf2ff;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-weight: 500;
-}
 
 /*# sourceMappingURL=styles.css.map */

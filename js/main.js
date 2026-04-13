@@ -6,19 +6,10 @@ function Usuario(nombre, pin, saldoArs, saldoDol) {
     this.saldoArs = saldoArs;
     this.saldoDol = saldoDol;
     this.movimientos = [];
-    this.depositar = function (monto) {
-        this.saldoArs += monto;
-        this.movimientos.push({
-            tipo: "Depósito",
-            monto: monto,
-            fecha: new Date().toLocaleString()
-        });
-    };
 }
 
 let usuarios = [];
 let usuarioActual = null;
-const inputUsuario = document.getElementById("inputUsuario");
 
 
 /*  Storage  */
@@ -43,12 +34,17 @@ function cargarDesdeStorage() {
 }
 
 cargarDesdeStorage();
-console.log(usuarios);
+
 
 /*  DOM  */
 
 const btnLogin = document.getElementById("btnLogin");
+const btnLogout = document.getElementById("btnLogout");
+
+const inputUsuario = document.getElementById("inputUsuario");
 const inputPin = document.getElementById("inputPin");
+const inputPlazoFijo = document.getElementById("inputPlazoFijo");
+
 const mensajeLogin = document.getElementById("mensajeLogin");
 
 const appSection = document.getElementById("appSection");
@@ -57,6 +53,7 @@ const loginSection = document.getElementById("login-section");
 const nombreUsuarioSpan = document.getElementById("nombreUsuario");
 const resultadoDiv = document.getElementById("resultado");
 const listaMovimientos = document.getElementById("listaMovimientos");
+
 
 /*  Login  */
 
@@ -74,131 +71,113 @@ btnLogin.addEventListener("click", () => {
         u.nombre.toUpperCase() === nombre && u.pin === pin
     );
 
-    if (encontrado) {
-        usuarioActual = encontrado;
-
-        loginSection.classList.add("hidden");
-        appSection.classList.remove("hidden");
-
-        nombreUsuarioSpan.textContent = usuarioActual.nombre;
-        mensajeLogin.textContent = "";
-
-        mostrarCuenta(usuarioActual.nombre);
-
-        document.getElementById("btnLogout").classList.remove("hidden");
-
-    } else {
+    if (!encontrado) {
         mensajeLogin.textContent = "Usuario o PIN incorrecto";
+        return;
     }
 
-    /*  Botones  */
-    document.getElementById("btnLogout").addEventListener("click", () => {
+    usuarioActual = encontrado;
 
-        usuarioActual = null;
+    loginSection.classList.add("hidden");
+    appSection.classList.remove("hidden");
 
-        appSection.classList.add("hidden");
-        loginSection.classList.remove("hidden");
+    mensajeLogin.textContent = "";
 
-        resultadoDiv.textContent = "";
-        listaMovimientos.innerHTML = "";
-
-        document.getElementById("btnLogout").classList.add("hidden");
+    mostrarCuenta(usuarioActual.nombre).then(() => {
+        nombreUsuarioSpan.textContent =
+            usuarioActual.nombreCompleto || usuarioActual.nombre;
     });
 
+    btnLogout.classList.remove("hidden");
+});
 
-    document.getElementById("btnSaldoArs").addEventListener("click", () => {
-        resultadoDiv.textContent = "Saldo en pesos: $" + usuarioActual.saldoArs;
 
-        usuarioActual.movimientos.push({
-            tipo: "Consulta saldo en pesos",
-            fecha: new Date().toLocaleString()
-        });
+/*  Logout  */
 
-        guardarEnStorage();
+btnLogout.addEventListener("click", () => {
+
+    usuarioActual = null;
+
+    appSection.classList.add("hidden");
+    loginSection.classList.remove("hidden");
+
+    resultadoDiv.textContent = "";
+    listaMovimientos.innerHTML = "";
+
+    btnLogout.classList.add("hidden");
+});
+
+
+/*  Botones  */
+
+document.getElementById("btnSaldoArs").addEventListener("click", () => {
+    if (!usuarioActual) return;
+
+    resultadoDiv.textContent = `Saldo en pesos: $${usuarioActual.saldoArs.toLocaleString()}`;
+
+    usuarioActual.movimientos.push({
+        tipo: "Consulta saldo en pesos",
+        fecha: new Date().toLocaleString()
     });
 
-    document.getElementById("btnSaldoDol").addEventListener("click", () => {
-        resultadoDiv.textContent = "Saldo en dólares: u$s" + usuarioActual.saldoDol;
+    guardarEnStorage();
+});
 
-        usuarioActual.movimientos.push({
-            tipo: "Consulta saldo en dólares",
-            fecha: new Date().toLocaleString()
-        });
+document.getElementById("btnSaldoDol").addEventListener("click", () => {
+    if (!usuarioActual) return;
 
-        guardarEnStorage();
+    resultadoDiv.textContent = `Saldo en dólares: U$D ${usuarioActual.saldoDol}`;
+
+    usuarioActual.movimientos.push({
+        tipo: "Consulta saldo en dólares",
+        fecha: new Date().toLocaleString()
     });
 
-    const inputDeposito = document.getElementById("inputDeposito");
+    guardarEnStorage();
+});
 
-    document.getElementById("btnDeposito").addEventListener("click", () => {
+document.getElementById("btnPlazoFijo").addEventListener("click", () => {
+    if (!usuarioActual) return;
 
-        const monto = parseFloat(inputDeposito.value);
+    const monto = parseFloat(inputPlazoFijo.value);
 
-        if (isNaN(monto) || monto <= 0) {
-            resultadoDiv.textContent = "Ingresá un monto válido";
-            return;
-        }
-
-        if (monto > usuarioActual.saldoArs * 10) {
-            resultadoDiv.textContent = "Supera límite de depósito";
-            return;
-        }
-
-        usuarioActual.depositar(monto);
-        guardarEnStorage();
-
-        mostrarCuenta(usuarioActual.nombre);
-
-        resultadoDiv.textContent = "Depósito de $" + monto + " realizado con éxito";
-
-        inputDeposito.value = "";
-    });
-
-
-    document.getElementById("btnMovimientos").addEventListener("click", () => {
-        listaMovimientos.innerHTML = "";
-        usuarioActual.movimientos.forEach((movimiento) => {
-            const li = document.createElement("li");
-
-            if (movimiento.tipo === "Depósito") {
-                li.textContent = `${movimiento.tipo} de $${movimiento.monto} - ${movimiento.fecha}`;
-            } else {
-                li.textContent = `${movimiento.tipo} - ${movimiento.fecha}`;
-            }
-
-            listaMovimientos.appendChild(li);
-        });
-    });
-
-    function mostrarCuenta(nombreUsuario) {
-        fetch("cuentas.json")
-            .then(response => response.json())
-            .then(cuentas => {
-
-                const contenedor = document.getElementById("info");
-                contenedor.innerHTML = "";
-
-                const cuenta = cuentas.find(
-                    c => c.usuario.toUpperCase() === nombreUsuario.toUpperCase()
-                );
-
-                if (cuenta) {
-
-                    if (usuarioActual.saldoArs === undefined) {
-                        usuarioActual.saldoArs = cuenta.saldoArs;
-                        usuarioActual.saldoDol = cuenta.saldoDol;
-                    }
-
-                    usuarioActual.numeroCuenta = cuenta.numeroCuenta;
-
-                    contenedor.innerHTML = `
-                        <p>N° Cuenta: ${cuenta.numeroCuenta}</p>
-                        <p>Saldo ARS: $${usuarioActual.saldoArs.toLocaleString()}</p>
-                        <p>Saldo USD: U$D ${usuarioActual.saldoDol}</p>
-        `;
-                } else {
-                    contenedor.innerHTML = "<p>No se encontró la cuenta</p>";
-                }
-            });
+    if (isNaN(monto) || monto <= 0) {
+        resultadoDiv.textContent = "Ingresá un monto válido";
+        return;
     }
+
+    if (monto > usuarioActual.saldoArs) {
+        resultadoDiv.textContent = "Saldo insuficiente";
+        return;
+    }
+
+    const interes = (monto * 0.20) / 360 * 30;
+    const total = monto + interes;
+
+    usuarioActual.saldoArs -= monto;
+
+    usuarioActual.movimientos.push({
+        tipo: `Plazo fijo por $${monto.toLocaleString("es-AR")}`,
+        fecha: new Date().toLocaleString()
+    });
+
+    guardarEnStorage();
+    mostrarCuenta(usuarioActual.nombre);
+
+    resultadoDiv.textContent =
+        `Invertiste $${monto}. Ganancia: $${interes.toFixed(2)}. Total: $${total.toFixed(2)}`;
+
+    inputPlazoFijo.value = "";
+});
+
+document.getElementById("btnMovimientos").addEventListener("click", () => {
+    if (!usuarioActual) return;
+
+    listaMovimientos.innerHTML = "";
+
+    usuarioActual.movimientos.forEach(mov => {
+        const li = document.createElement("li");
+        li.textContent = `${mov.tipo} - ${mov.fecha}`;
+        listaMovimientos.appendChild(li);
+    });
 });

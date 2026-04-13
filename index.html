@@ -26,19 +26,27 @@
         </section>
 
         <section id="appSection" class="hidden">
-            <h2>Bienvenido/a <span id="nombreUsuario"></span></h2>
-            <button id="btnSaldoArs">Consultar saldo en pesos</button>
-            <button id="btnSaldoDol">Consultar saldo en dólares</button>
-            <button id="btnMovimientos">Ver movimientos</button>
-            <button id="btnDeposito">Depositar pesos</button>
-            <input type="number" id="inputDeposito" placeholder="Ingresar monto">
+
+            <h2>Hola, <span id="nombreUsuario"></span></h2>
+
+            <h3>Cuentas</h3>
+
+            <div id="info" class="tarjeta"></div>
+
+            <div class="acciones">
+                <button id="btnSaldoArs">Consultar saldo en pesos</button>
+                <button id="btnSaldoDol">Consultar saldo en dólares</button>
+                <button id="btnMovimientos">Ver movimientos</button>
+                <input type="number" id="inputPlazoFijo" placeholder="Monto a invertir">
+                <button id="btnPlazoFijo">Constituir plazo fijo a 30 días</button>
+            </div>
 
             <div id="resultado"></div>
             <ul id="listaMovimientos"></ul>
 
-            <h2>Cuentas</h2>
-            <div id="info"></div>
         </section>
+        
+        <script src="js/cuentas.js"></script>
         <script src="js/main.js"></script>
     </main>
 </body>
