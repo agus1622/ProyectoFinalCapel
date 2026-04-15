@@ -35,19 +35,34 @@
 
             <div class="acciones">
 
-                <button id="btnTransferir">Transferir dinero</button>
-                <input type="text" id="inputDestino" placeholder="Usuario destino">
-                <input type="number" id="inputTransferencia" placeholder="Monto a transferir">
-                
-                <button id="btnComprarDol">Comprar dólares</button>
-                <input type="number" id="inputCompraDol" placeholder="Monto en pesos">
-                <p id="cotizacionDol">Cotización USD: $1410</p>
+                <div class="seccion">
+                    <button id="btnTransferir" class="btn-toggle">Transferir dinero</button>
+                    <div class="contenido">
+                        <input type="text" id="inputDestino" placeholder="Usuario destino">
+                        <input type="number" id="inputTransferencia" placeholder="Monto a transferir">
+                        <button id="btnConfirmarTransferencia" class="btn-confirmar">Aceptar</button>
+                    </div>
+                </div>
 
-                <button id="btnPlazoFijo">Constituir plazo fijo a 30 días</button>
-                <input type="number" id="inputPlazoFijo" placeholder="Monto a invertir">
+                <div class="seccion">
+                    <button id="btnComprarDol" class="btn-toggle">Comprar dólares</button>
+                    <div class="contenido">
+                        <p id="cotizacionDol">Cotización 1 USD = $1390</p>
+                        <input type="number" id="inputCompraDol" placeholder="Monto en pesos a debitar">
+                        <button id="btnConfirmarCompra" class="btn-confirmar">Aceptar</button>
+                    </div>
+                </div>
+
+                <div class="seccion">
+                    <button id="btnPlazoFijo" class="btn-toggle">Constituir plazo fijo a 30 días</button>
+                    <div class="contenido">
+                        <input type="number" id="inputPlazoFijo" placeholder="Monto a invertir">
+                        <button id="btnConfirmarPlazoFijo" class="btn-confirmar">Aceptar</button>
+                    </div>
+                </div>
 
                 <button id="btnMovimientos">Ver movimientos</button>
-                
+
             </div>
 
             <div id="resultado"></div>
@@ -58,6 +73,10 @@
         <script src="js/cuentas.js"></script>
         <script src="js/main.js"></script>
     </main>
+    <footer class="footer">
+        <p>© 2026 FINCAP - Homebanking</p>
+        <p>No es magia negra, es programación 🔥</p>
+    </footer>
 </body>
 
 </html>

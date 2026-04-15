@@ -10,7 +10,7 @@ function Usuario(nombre, pin, saldoArs, saldoDol) {
 
 let usuarios = [];
 let usuarioActual = null;
-const COTIZACION_DOLAR = 1410;
+const COTIZACION_DOLAR = 1390;
 
 
 /*  Storage  */
@@ -111,31 +111,47 @@ btnLogout.addEventListener("click", () => {
 
 /*  Botones  */
 
-document.getElementById("btnTransferir").addEventListener("click", () => {
+document.getElementById("btnConfirmarTransferencia").addEventListener("click", () => {
     if (!usuarioActual) return;
 
     const destinoNombre = document.getElementById("inputDestino").value.trim().toUpperCase();
     const monto = parseFloat(document.getElementById("inputTransferencia").value);
 
     if (destinoNombre === "") {
-        resultadoDiv.textContent = "Ingresá un usuario destino";
+        Swal.fire({
+            icon: "error",
+            title: "Datos insuficientes",
+            text: "Ingresá un usuario de destino"
+        });
         return;
     }
 
     const destino = usuarios.find(u => u.nombre.toUpperCase() === destinoNombre);
 
     if (!destino) {
-        resultadoDiv.textContent = "El usuario no existe";
+        Swal.fire({
+            icon: "error",
+            title: "Error en transferencia",
+            text: "El usuario ingresado no existe"
+        });
         return;
     }
 
     if (destino === usuarioActual) {
-        resultadoDiv.textContent = "No podés transferirte a vos mismo";
+        Swal.fire({
+            icon: "error",
+            title: "Error en transferencia",
+            text: "No podés transferirte a vos mismo"
+        });
         return;
     }
 
     if (isNaN(monto) || monto <= 0) {
-        resultadoDiv.textContent = "Monto inválido";
+        Swal.fire({
+            icon: "error",
+            title: "Monto inválido",
+            text: "Por favor, ingresá un monto para continuar"
+        });
         return;
     }
 
@@ -152,12 +168,12 @@ document.getElementById("btnTransferir").addEventListener("click", () => {
     destino.saldoArs += monto;
 
     usuarioActual.movimientos.push({
-        tipo: `Transferencia enviada a ${destino.nombre} por $${monto}`,
+        tipo: `Transferencia enviada a ${destino.nombre} por $${monto.toLocaleString("es-AR")}`,
         fecha: new Date().toLocaleString()
     });
 
     destino.movimientos.push({
-        tipo: `Transferencia recibida de ${usuarioActual.nombre} por $${monto}`,
+        tipo: `Transferencia recibida de ${usuarioActual.nombre} por $${monto.toLocaleString("es-AR")}`,
         fecha: new Date().toLocaleString()
     });
 
@@ -167,7 +183,7 @@ document.getElementById("btnTransferir").addEventListener("click", () => {
     Swal.fire({
         icon: "success",
         title: "Transferencia exitosa",
-        text: `Enviaste $${monto} a ${destino.nombre}`
+        text: `Enviaste $${monto.toLocaleString("es-AR")} a ${destino.nombre}`
     });
 
     document.getElementById("inputDestino").value = "";
@@ -175,7 +191,7 @@ document.getElementById("btnTransferir").addEventListener("click", () => {
 });
 
 
-document.getElementById("btnComprarDol").addEventListener("click", () => {
+document.getElementById("btnConfirmarCompra").addEventListener("click", () => {
     if (!usuarioActual) return;
 
     const monto = parseFloat(document.getElementById("inputCompraDol").value);
@@ -220,7 +236,7 @@ document.getElementById("btnComprarDol").addEventListener("click", () => {
     document.getElementById("inputCompraDol").value = "";
 });
 
-document.getElementById("btnPlazoFijo").addEventListener("click", () => {
+document.getElementById("btnConfirmarPlazoFijo").addEventListener("click", () => {
     if (!usuarioActual) return;
 
     const monto = parseFloat(inputPlazoFijo.value);
@@ -260,10 +276,10 @@ document.getElementById("btnPlazoFijo").addEventListener("click", () => {
         icon: "success",
         title: "Plazo fijo constituido",
         html: `
-        Invertiste $${monto}<br>
-        Ganancia: $${interes.toFixed(2)}<br>
-        Total a acreditar: $${total.toFixed(2)}
-    `
+            Invertiste $${monto.toLocaleString("es-AR")}<br>
+            Ganancia: $${interes.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br>
+            otal a acreditar: $${total.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        `
     });
 
     inputPlazoFijo.value = "";
@@ -274,6 +290,13 @@ document.getElementById("btnMovimientos").addEventListener("click", () => {
 
     listaMovimientos.innerHTML = "";
 
+    if (usuarioActual.movimientos.length === 0) {
+        const li = document.createElement("li");
+        li.textContent = "No hay movimientos para mostrar";
+        listaMovimientos.appendChild(li);
+        return;
+    }
+
     usuarioActual.movimientos.forEach(mov => {
         const li = document.createElement("li");
         li.textContent = `${mov.tipo} - ${mov.fecha}`;
@@ -281,4 +304,21 @@ document.getElementById("btnMovimientos").addEventListener("click", () => {
     });
 });
 
+/* Despleagble */
 
+const botones = document.querySelectorAll(".btn-toggle");
+
+botones.forEach(boton => {
+    boton.addEventListener("click", () => {
+
+        const contenido = boton.nextElementSibling;
+
+        document.querySelectorAll(".contenido").forEach(c => {
+            if (c !== contenido) {
+                c.classList.remove("activo");
+            }
+        });
+
+        contenido.classList.toggle("activo");
+    });
+});

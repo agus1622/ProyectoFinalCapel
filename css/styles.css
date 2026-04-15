@@ -1,8 +1,16 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background: #f4f6f8;
     margin: 0;
     color: #1e2a38;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -14,13 +22,17 @@ header {
     color: white;
 }
 
+main {
+    flex: 1;
+}
+
 #login-section {
     max-width: 400px;
     margin: 80px auto;
     background: white;
     padding: 25px;
     border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 #appSection {
@@ -32,7 +44,8 @@ header {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-#appSection h2, #appSection h3 {
+#appSection h2,
+#appSection h3 {
     margin-bottom: 20px;
     color: #1e2a38;
 }
@@ -96,6 +109,31 @@ input {
     display: none;
 }
 
+.contenido {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.contenido.activo {
+    max-height: 200px;
+}
+
+.btn-confirmar {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: auto;
+    display: inline-block;
+}
+
+.btn-confirmar:hover {
+    background-color: #218838;
+}
+
 #resultado {
     margin-top: 10px;
     font-weight: bold;
@@ -111,5 +149,13 @@ input {
     margin-bottom: 5px;
 }
 
+.footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    background-color: #1e2a38;
+    color: white;
+    font-size: 14px;
+}
 
 /*# sourceMappingURL=styles.css.map */
