@@ -278,7 +278,7 @@ document.getElementById("btnConfirmarPlazoFijo").addEventListener("click", () =>
         html: `
             Invertiste $${monto.toLocaleString("es-AR")}<br>
             Ganancia: $${interes.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br>
-            otal a acreditar: $${total.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Total a acreditar: $${total.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         `
     });
 
